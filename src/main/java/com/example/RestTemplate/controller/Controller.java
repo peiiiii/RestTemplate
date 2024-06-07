@@ -26,14 +26,14 @@ public class Controller {
 
     // send request to "http://universities.hipolabs.com/search"
     @GetMapping
-    public ResponseEntity<List<University>> getAllUni(){
+    public ResponseEntity<?> getAllUni(){
         return new ResponseEntity<>(universityService.getAll(), HttpStatus.OK);
     }
 
     // Accept list of countries and use multithreading to send request to 
     // "http://universities.hipolabs.com/search?country=United+Kingdom"
     @GetMapping(params = "countries")
-    public ResponseEntity<List<University>> getUniByCountries(@RequestParam List<String> countries){
+    public ResponseEntity<?> getUniByCountries(@RequestParam List<String> countries){
         return new ResponseEntity<>(universityService.getByCountries(countries), HttpStatus.OK);
     }
 }
