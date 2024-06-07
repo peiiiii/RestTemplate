@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,10 +20,13 @@ import com.example.RestTemplate.service.UniversityService;
 @Service
 public class UniversityServiceImpl1 implements UniversityService {
 
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private ThreadPoolTaskExecutor taskExecutor;
+    private final RestTemplate restTemplate;
+    private final ExecutorService pool;
+
+    public UniversityServiceImpl1(RestTemplate restTemplate, ExecutorService pool) {
+        this.restTemplate = restTemplate;
+        this.pool = pool;
+    }
 
     @Value("${university.url}")
     private String endpoint;
@@ -44,7 +46,7 @@ public class UniversityServiceImpl1 implements UniversityService {
                 CompletableFuture<List<University>> future = CompletableFuture.supplyAsync(() -> {
                     University[] response = restTemplate.getForObject(url, University[].class);
                     return Arrays.asList(response);
-                }, taskExecutor).whenComplete((r,e) -> {
+                }, pool).whenComplete((r,e) -> {
                     if(e == null) System.out.println("Completed. Response length = " + r.size());
                     else System.out.println("Error: " + e);
                 });
