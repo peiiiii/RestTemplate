@@ -24,13 +24,12 @@ public class UniversityService {
     private ThreadPoolTaskExecutor taskExecutor;
     private final String endpoint = "http://universities.hipolabs.com/search";
 
-    
-    public List<University> searchAll(){
+    public List<University> getAll(){
         University[] universities = restTemplate.getForObject(endpoint, University[].class);
         return Arrays.asList(universities);
     }
 
-    public List<University> searchByCountries(List<String> countries){
+    public List<University> getByCountries(List<String> countries){
         List<CompletableFuture<List<University>>> futures = new ArrayList<>();
         for (String country : countries) {
             try {
